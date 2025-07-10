@@ -1,0 +1,32 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "npx mix",
+        "watch": "npx mix watch",
+        "watch-poll": "npx mix watch -- --watch-options-poll=1000",
+        "hot": "npx mix watch --hot",
+        "prod": "npm run production",
+        "production": "npx mix --production"
+    },
+    "devDependencies": {
+        "@babel/plugin-proposal-class-properties": "^7.18.6",
+        "@babel/preset-react": "^7.13.13",
+        "@popperjs/core": "^2.10.2",
+        "axios": "^0.19",
+        "cross-env": "^7.0",
+        "laravel-mix": "^6.0.0",
+        "lodash": "^4.17.19",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "resolve-url-loader": "^3.1.0",
+        "sass": "^1.32.11",
+        "sass-loader": "^11.0.1"
+    },
+    "dependencies": {
+        "@ant-design/icons": "^6.0.0",
+        "antd": "^5.26.4",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0"
+    }
+}
