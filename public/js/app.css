@@ -248,3 +248,55 @@ mark {
   background-color: #feffe6;
 }
 
+.LiOejyhpcsdS4Q3TC3amNA\=\= {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 99;
+  transform: translateX(100%);
+  transition: all 0.2s cubic-bezier(0.39, 0.58, 0.57, 1);
+  color: #333;
+}
+.LiOejyhpcsdS4Q3TC3amNA\=\=.xBzKhO19b0xuRGEmvm\+Siw\=\= {
+  transform: translateX(0);
+}
+.LiOejyhpcsdS4Q3TC3amNA\=\= .XETR5fQSzttQd5k\+HXGFgA\=\= {
+  position: relative;
+}
+.LiOejyhpcsdS4Q3TC3amNA\=\= .XETR5fQSzttQd5k\+HXGFgA\=\= > h3 {
+  padding: 0.5em 1em 0.5em;
+}
+.LiOejyhpcsdS4Q3TC3amNA\=\= .XETR5fQSzttQd5k\+HXGFgA\=\= .IM8SejFrC\+c5ya3LyOAtmQ\=\= {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #f2f2f2;
+  border-radius: 100%;
+  background: #fff;
+  color: #e91010;
+  font-size: 2.5rem;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.9;
+}
+.LiOejyhpcsdS4Q3TC3amNA\=\= .XETR5fQSzttQd5k\+HXGFgA\=\= .IM8SejFrC\+c5ya3LyOAtmQ\=\=:hover {
+  background: #f2f2f2;
+  opacity: 1;
+}
+.LiOejyhpcsdS4Q3TC3amNA\=\= ._5NEAMHKPAIqreDJvjfQbfA\=\= {
+  padding: 0 0 2em;
+  overflow: auto;
+  height: 100%;
+}
+.CZ-PHwzkKilc5j3OdTY3sQ\=\= {
+  display: flex;
+  gap: 7px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}

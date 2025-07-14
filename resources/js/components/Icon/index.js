@@ -1,0 +1,10 @@
+export { default as IconHotel } from './IconHotel';
+export { default as IconBbq } from './IconBbq';
+export { default as IconTent } from './IconTent';
+export { default as IconComboTent } from './IconComboTent';
+export { default as IconExcel } from './IconExcel';
+export { default as IconTour } from './IconTour';
+export { default as IconComboTour } from './IconComboTour';
+export { default as IconCoffee } from './IconCoffee';
+export { default as IconBoat } from './IconBoat';
+export { default as IconMotobike } from './IconMotobike'

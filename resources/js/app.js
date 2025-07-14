@@ -1,10 +1,8 @@
-
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import 'antd/dist/reset.css'; // AntD 5: Dùng reset CSS
 import App from '@components/App';
 
 
-if (document.getElementById('app')) {
-    ReactDOM.render(<App />, document.getElementById('app'));
-}
+const container = document.getElementById('app');
+const root = createRoot(container);
+root.render(<App />);
