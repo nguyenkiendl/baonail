@@ -1,0 +1,14 @@
+bmewburn.vscode-intelephense-client
+bradgashler.htmltagwrap
+burkeholland.simple-react-snippets
+esbenp.prettier-vscode
+graphql.vscode-graphql
+graphql.vscode-graphql-syntax
+kokororin.vscode-phpfmt
+lonefy.vscode-js-css-html-formatter
+octref.vetur
+onecentlin.laravel-blade
+rifi2k.format-html-in-php
+shufo.vscode-blade-formatter
+valeryanm.vscode-phpsab
+vue.volar

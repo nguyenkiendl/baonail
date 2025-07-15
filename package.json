@@ -19,7 +19,7 @@
         "lodash": "^4.17.19",
         "resolve-url-loader": "^3.1.0",
         "sass": "^1.89.2",
-        "sass-loader": "^12.6.0"
+        "sass-loader": "^13.3.3"
     },
     "dependencies": {
         "@ant-design/icons": "^6.0.0",
