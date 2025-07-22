@@ -7,7 +7,6 @@ import notify from "~/utils/notify.js";
 const Login = () => {
     const [isSubmit, setIsSubmit] = useState(false);
     const [role, setRole] = useState('');
-    const [view, setView] = useState('');
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -17,21 +16,11 @@ const Login = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            if (role == 'superadmin') {
-                return navigate("/order");
-            } else if (['maketing'].includes(role)) {
-                return navigate(`/statistical`);
-            } else if (['housekeeping', 'housechecking'].includes(role)) {
-                return navigate(`/${view}/room`);
-            } else if (view) {
-                return navigate(`/order-private/${view}`);
-            } else if (isSubmit && view == '') {
-                return notify.error("Tài khoản chưa cấp quyền", "Vui lòng liên hệ quản lý để được hỗ trợ!");
-            }
+            navigate("/admin-panel");
         }
-    }, [isLoggedIn, isSubmit, role, view])
+    }, [isLoggedIn, isSubmit, role])
 
-    const onFinish = async (values) => {
+    const onFinish = async(values) => {
         console.log("Received values:", values);
         const { username, password } = values;
         setLoading(true);
@@ -41,7 +30,6 @@ const Login = () => {
                 if (response.access_token) {
                     setLoading(false);
                     setRole(response.role);
-                    setView(response.view);
                     setIsSubmit(true);
                     console.log("Login Successfuly!!!");
                 }

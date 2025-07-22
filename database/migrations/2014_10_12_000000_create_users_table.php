@@ -21,10 +21,9 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->enum('status', ['Active', 'Deactive'])->default('Active');
-            $table->unsignedInteger('role_id');
+            $table->foreignId('role_id')->default(3)->constrained()->onDelete('cascade');
             $table->timestamps();
 
-            $table->foreignId('role_id')->default(3)->constrained()->onDelete('cascade');
         });
     }
 

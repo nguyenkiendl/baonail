@@ -331,72 +331,9 @@ function AdminLayout({ children }) {
     const sideItems = [];
     sideItems.push(initialItems.dashboard);
     useEffect(() => {
-        const itemViews = userViews.map((v) => {
-            return {
-                ['key']: `order-private/${v.key}`,
-                ['icon']: renderIcon(v.icon),
-                ['label']: <Link to={`/order-private/${v.key}`}>{v.name}</Link>
-            }
-        });
         if (userRole && userViews) {
-            if (userRole == 'superadmin') {
-                sideItems.push(initialItems.statistical);
+            if (userRole == 'admin') {
                 sideItems.push(initialItems.user);
-                sideItems.push(initialItems.wareHouse);
-                sideItems.push(initialItems.utensil);
-                sideItems.push(initialItems.periodic);
-                sideItems.push(initialItems.orderConfirm);
-                sideItems.push(initialItems.booking);
-                sideItems.push(initialItems.order);
-                sideItems.push(initialItems.orderCompleted);
-                sideItems.push(initialItems.orderReserve);
-
-                sideItems.push(initialItems.wareHouseTransfer);
-                sideItems.push(initialItems.wareHouseIn);
-                sideItems.push(initialItems.wareHouseOut);
-                sideItems.push(initialItems.stockVU);
-                sideItems.push(initialItems.stockMD);
-                sideItems.push(initialItems.stockDL);
-
-                sideItems.push(initialItems.checkRoom);
-                sideItems.push(initialItems.settingRoom);
-
-            } else if (userRole == 'maketing') {
-                sideItems.push(initialItems.statistical);
-            } else {
-                if (userRole == 'adminapproval') {
-                    sideItems.push(initialItems.wareHouse);
-                }
-                sideItems.push(initialItems.utensil);
-                sideItems.push(initialItems.periodic);
-                sideItems.push(initialItems.orderConfirm);
-                sideItems.push(initialItems.booking);
-
-                const children = [];
-                for (let i in itemViews) {
-                    let item = itemViews[i];
-                    children.push(item);
-                }
-                sideItems.push({
-                    key: "order",
-                    icon: <OrderedListOutlined />,
-                    label: <span>Dịch vụ</span>,
-                    children: children
-                });
-                sideItems.push(initialItems.orderCompleted);
-                sideItems.push(initialItems.orderReserve);
-
-                sideItems.push(initialItems.wareHouseTransfer);
-                sideItems.push(initialItems.wareHouseIn);
-                sideItems.push(initialItems.wareHouseOut);
-                if (userRole == 'adminapproval') {
-                    sideItems.push(initialItems.stockVU);
-                    sideItems.push(initialItems.stockMD);
-                    sideItems.push(initialItems.stockDL);
-                }
-
-                sideItems.push(initialItems.product);
-                sideItems.push(initialItems.checkRoom);
             }
             setItems(sideItems);
         }

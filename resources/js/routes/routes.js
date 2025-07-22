@@ -12,6 +12,7 @@ const publicRoutes = [
 const privateRoutes = [
     //private routes
     { path: "/dashboard", component: Dashboard },
+    { path: "/admin-panel", component: Dashboard },
 ];
 
 export { publicRoutes, privateRoutes };

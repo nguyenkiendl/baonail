@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,6 @@ Route::prefix('v1')->group(function () {
     Route::prefix('private')->middleware('auth:api')->group(base_path('routes/apis/v1/private.php'));
     Route::get('logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('logout');
 });
-
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

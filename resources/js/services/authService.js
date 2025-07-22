@@ -1,6 +1,6 @@
 import axios from "axios";
-export const TOKEN_NAME = "VietUcAccessToken";
-const TOKEN_EXPIRED_NAME = "VietUcTokenExpired";
+export const TOKEN_NAME = "BaoNailAccessToken";
+const TOKEN_EXPIRED_NAME = "BaoNailTokenExpired";
 class authService {
     login(username, password) {
         return axios
