@@ -1,5 +1,5 @@
-const mix = require('laravel-mix');
-const path = require('path');
+const mix = require("laravel-mix");
+const path = require("path");
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -11,25 +11,28 @@ const path = require('path');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+mix.js("resources/js/app.js", "public/js")
     .react()
-    .sass('resources/sass/app.scss', 'public/css');
+    .sass("resources/sass/app.scss", "public/css");
 
 mix.webpackConfig({
     resolve: {
         alias: {
-            '~': path.resolve(__dirname, 'resources/js'),
-            '@components': path.resolve(__dirname, 'resources/js/components'),
-            '@pages': path.resolve(__dirname, 'resources/js/pages'),
-            '@utils': path.resolve(__dirname, 'resources/js/utils'),
+            "~": path.resolve(__dirname, "resources/js"),
+            "@components": path.resolve(__dirname, "resources/js/components"),
+            "@pages": path.resolve(__dirname, "resources/js/pages"),
+            "@utils": path.resolve(__dirname, "resources/js/utils"),
         },
     },
-    ignoreWarnings: [
-        {
+    ignoreWarnings: [{
             module: /sass-loader/,
             message: /The legacy JS API is deprecated/,
-        }
-    ] 
+        },
+        {
+            module: /sass\.dart\.js/,
+            message: /Critical dependency: require function is used/,
+        },
+    ],
 });
 
 mix.options({
@@ -40,9 +43,9 @@ mix.options({
 
 // Source map và thông báo
 if (mix.inProduction()) {
-    mix.version();  // Đảm bảo băm (cache busting) các file khi production
+    mix.version(); // Đảm bảo băm (cache busting) các file khi production
 } else {
-    mix.sourceMaps();  // Bật source maps cho môi trường phát triển
+    mix.sourceMaps(); // Bật source maps cho môi trường phát triển
 }
 
 mix.disableNotifications();

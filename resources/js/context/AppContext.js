@@ -10,15 +10,15 @@ export const AppProvider = ({ children }) => {
         storeUsers.profile().then((reponse) => {
             if (reponse) {
                 setUser(reponse.user);
-                setRoles(reponse.roles);
                 setUserRole(reponse.user.role);
+                setRoles(reponse.roles);
             }
         });
     }, []);
     const value = {
         user,
-        roles,
         userRole,
+        roles,
     };
     return (
         <AppContext.Provider value={value}> {children} </AppContext.Provider>

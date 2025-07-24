@@ -42,7 +42,7 @@ function AdminHeader({ collapsed, setCollapsed }) {
                 )}
             </Header>
             <div className={cx("nav-user")}>
-                <Link to="/profile" key="profile">
+                <Link to="/admin-panel/profile" key="profile">
                     <Button type="primary">{user.name}</Button>
                 </Link>
                 <Button onClick={handleLogout}>Thoát</Button>

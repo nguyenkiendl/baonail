@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
+use App\Models\Role;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +16,8 @@ class UserController extends Controller
     public function profile(Request $request, User $user): JsonResponse
     {
         return response()->json([
-            'user' => new UserResource(Auth::user()),
+            'user'  => new UserResource(Auth::user()),
+            'roles' => RoleResource::collection(Role::get()),
         ]);
     }
 
@@ -22,20 +25,19 @@ class UserController extends Controller
     {
         $request->validate([
             'name'     => 'nullable|string|max:255',
-            'username' => 'required|string|max:255',
             'email'    => 'sometimes|nullable|string|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|max:255|confirmed',
-            'info'     => 'nullable|array',
         ]);
         $attributes = $request->all();
+
         DB::beginTransaction();
         try {
-            $userData = $user->update($attributes);
+            $user->update($attributes);
             DB::commit();
             return response()->json([
                 'success' => true,
                 'message' => 'OK',
-                'data'    => new UserResource($userData),
+                'data'    => new UserResource($user->fresh()),
             ]);
         } catch (Exception $e) {
             logger($e);
@@ -113,7 +115,7 @@ class UserController extends Controller
             DB::commit();
             return $this->response([
                 'success' => true,
-                'data'    => new UserResource($user),
+                'data'    => new UserResource($user->fresh()),
             ]);
         } catch (Exception $e) {
             logger($e);

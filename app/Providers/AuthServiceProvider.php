@@ -28,6 +28,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Passport::tokensCan([
             'view-profile' => 'View own user profile',
+            'edit-profile' => 'Edit own user profile',
             'view-post'    => 'View/read posts',
             'create-post'  => 'Create posts',
             'edit-post'    => 'Edit posts',

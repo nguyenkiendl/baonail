@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +13,7 @@ class User extends Authenticatable
     const STATUS_ACTIVE   = 'Active';
     const STATUS_DEACTIVE = 'Deactive';
 
-    use HasFactory, HasApiTokens, Notifiable;
+    use HasFactory, HasApiTokens, Notifiable, Filterable;
 
     /**
      * The attributes that are mass assignable.
@@ -58,11 +59,11 @@ class User extends Authenticatable
     {
         switch ($role) {
             case 'admin':
-                return ['view-profile', 'view-post', 'create-post', 'edit-post', 'delete-post', 'ban-user', 'moderate', 'admin'];
+                return ['view-profile', 'edit-profile', 'view-post', 'create-post', 'edit-post', 'delete-post', 'ban-user', 'moderate', 'admin'];
             case 'moderator':
-                return ['view-profile', 'view-post', 'edit-post', 'delete-post', 'moderate'];
+                return ['view-profile', 'edit-profile', 'view-post', 'edit-post', 'delete-post', 'moderate'];
             case 'member':
-                return ['view-profile', 'view-post', 'create-post', 'edit-post'];
+                return ['view-profile', 'edit-profile', 'view-post', 'create-post', 'edit-post'];
             case 'guest':
                 return ['view-post'];
             case 'banned':

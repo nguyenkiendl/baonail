@@ -13,7 +13,7 @@ Route::middleware(['auth:api', 'scope:create-post,edit-post'])->post('/posts/edi
     return 'Bạn có thể tạo và sửa bài viết.';
 });
 
-Route::middleware(['auth:api', 'scopes:view-profile'])->group(function () {
+Route::middleware(['auth:api', 'scopes:view-profile,edit-profile'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/profile', [UserController::class, 'profile']);
         Route::put('/profile/{user}', [UserController::class, 'updateProfile']);
@@ -21,8 +21,7 @@ Route::middleware(['auth:api', 'scopes:view-profile'])->group(function () {
 
 });
 
-// Route cần token có scope 'create-post' và 'edit-post'
-Route::middleware(['auth:api', 'scope:admin'])->post('/posts/edit', function () {
+Route::middleware(['auth:api', 'scope:admin'])->group(function () {
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
         Route::post('/', [UserController::class, 'store']);
