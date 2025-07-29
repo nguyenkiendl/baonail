@@ -6,7 +6,7 @@ import notify from "~/utils/notify.js";
 
 const Login = () => {
     const [isSubmit, setIsSubmit] = useState(false);
-    const [role, setRole] = useState('');
+    const [role, setRole] = useState("");
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -16,11 +16,17 @@ const Login = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            navigate("/admin-panel");
+            if (role == "admin") {
+                navigate("/admin-panel");
+            } else if (role == "moderator") {
+                navigate("/moderator-panel");
+            } else if (role == "member") {
+                navigate("/member-panel");
+            }
         }
-    }, [isLoggedIn, isSubmit, role])
+    }, [isLoggedIn, isSubmit, role]);
 
-    const onFinish = async(values) => {
+    const onFinish = async (values) => {
         console.log("Received values:", values);
         const { username, password } = values;
         setLoading(true);

@@ -44,7 +44,6 @@ function Profile() {
 
     const onFinish = (values) => {
         setLoading(true);
-        console.log(values);
         users
             .updateProfile(user.id, values)
             .then((res) => {
@@ -89,8 +88,6 @@ function Profile() {
             password_confirmation: newPass,
         });
     };
-
-    console.log(isEditPassword);
 
     useEffect(() => {
         if (user) {

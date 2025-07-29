@@ -4,7 +4,7 @@ export const AppContext = createContext({});
 export const AppProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [roles, setRoles] = useState([]);
-    const [userRole, setUserRole] = useState("receptionist");
+    const [userRole, setUserRole] = useState("");
 
     useEffect(() => {
         storeUsers.profile().then((reponse) => {
