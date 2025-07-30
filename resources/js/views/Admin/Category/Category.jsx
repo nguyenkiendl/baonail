@@ -21,7 +21,6 @@ import TopHeader from "~/components/TopHeader/TopHeader";
 const { Text, Link } = Typography;
 
 function Category() {
-    const { wareHouse } = useParams();
     const navigate = useNavigate();
     const [load, setLoad] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -34,7 +33,7 @@ function Category() {
 
     const fetchDatas = () => {
         setLoading(true);
-        categories.getDatas(wareHouse).then((res) => {
+        categories.getDatas().then((res) => {
             setDataSource(res.data);
             setLoading(false);
         });
@@ -44,12 +43,8 @@ function Category() {
         fetchDatas();
     }, [load]);
 
-    const handleCategoryDetail = (cateId) => {
-        navigate(`/${wareHouse}/category/${cateId}`);
-    };
-
     const handleClickAdd = (e) => {
-        setFormData({ name: "", unit: "", price: 0 });
+        setFormData({ name: "", parent_id: null });
         setIsOpen(true);
     };
 
@@ -97,18 +92,6 @@ function Category() {
         }
     };
 
-    const getTotalPrice = (id) => {
-        var totalPrice = 0;
-        const record = dataSource.find((d) => d.id == id);
-        if (record && record.datas?.length > 0) {
-            totalPrice = record.datas?.reduce(
-                (total, item) => total + item.price * item.quantity,
-                0
-            );
-        }
-        return totalPrice;
-    };
-
     const handleChangeName = (valueName) => {
         setFilters({ ...filters, name: valueName });
     };
@@ -129,7 +112,7 @@ function Category() {
     return (
         <>
             <TopHeader
-                title="Thực đơn"
+                title="Danh mục"
                 extra={
                     <Button
                         type="primary"
@@ -137,12 +120,13 @@ function Category() {
                         icon={<PlusOutlined />}
                         onClick={handleClickAdd}
                     >
-                        Thêm thực đơn
+                        Thêm danh mục
                     </Button>
                 }
             />
             <CategoryModal
                 isOpen={isOpen}
+                dataSource={dataSource}
                 initialValues={formData}
                 onSubmit={finishSubmitForm}
                 onCancel={closeModal}
@@ -189,23 +173,12 @@ function Category() {
                         )}
                     />
                     <Table.Column
-                        title="GIÁ NHẬP"
-                        dataIndex="cost"
-                        key="cost"
+                        title="DANH MỤC CHA"
+                        dataIndex="parent_name"
+                        key="parentName"
                         width={120}
-                        render={(text, record) => (
-                            <Text type="danger">
-                                {formatPrice(getTotalPrice(record.id))}
-                            </Text>
-                        )}
-                    />
-                    <Table.Column
-                        title="GIÁ BÁN"
-                        dataIndex="price"
-                        key="price"
-                        width={120}
-                        render={(price) => (
-                            <Text type="danger">{formatPrice(price)}</Text>
+                        render={(parentName, record) => (
+                            <span>{parentName}</span>
                         )}
                     />
                     <Table.Column
@@ -221,11 +194,9 @@ function Category() {
                                         <Button
                                             size="small"
                                             type="primary"
-                                            onClick={() =>
-                                                handleCategoryDetail(record.id)
-                                            }
+                                            onClick={() => handleEdit(record)}
                                         >
-                                            Chi tiết
+                                            Chỉnh sửa
                                         </Button>
                                         <Popconfirm
                                             placement="left"

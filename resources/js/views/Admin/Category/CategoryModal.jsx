@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Form, Input, InputNumber } from "antd";
+import { Button, Modal, Form, Input, InputNumber, Select } from "antd";
 import notify from "~/utils/notify";
 import categories from "~/store/categories";
 import { useParams } from "react-router-dom";
 import { formatter, parser } from "~/utils/filters";
 const { TextArea } = Input;
-function CategoryModal({ isOpen, initialValues, onSubmit, onCancel }) {
-    const { wareHouse } = useParams();
+function CategoryModal({
+    isOpen,
+    dataSource,
+    initialValues,
+    onSubmit,
+    onCancel,
+}) {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [parents, setParents] = useState([]);
 
     const onFinish = (values) => {
         setLoading(true);
@@ -17,7 +23,7 @@ function CategoryModal({ isOpen, initialValues, onSubmit, onCancel }) {
                 .updateData(initialValues.id, values)
                 .then((response) => {
                     if (response.success) {
-                        onSubmit('update', response.data);
+                        onSubmit("update", response.data);
                         notify.success("Thành công", response.message);
                     } else {
                         notify.error("Thất bại", response.message);
@@ -31,10 +37,10 @@ function CategoryModal({ isOpen, initialValues, onSubmit, onCancel }) {
                 });
         } else {
             categories
-                .addData(wareHouse, values)
+                .addData(values)
                 .then((response) => {
                     if (response.success) {
-                        onSubmit('add', response.data);
+                        onSubmit("add", response.data);
                         notify.success("Thành công", response.message);
                     } else {
                         notify.error("Thất bại", response.message);
@@ -54,10 +60,19 @@ function CategoryModal({ isOpen, initialValues, onSubmit, onCancel }) {
     var text = initialValues.id ? "Sửa danh mục" : "Thêm danh mục";
     useEffect(() => {
         if (isOpen) {
-            //console.log(initialValues);
+            console.log(initialValues);
             form.setFieldsValue(initialValues);
+            if (dataSource) {
+                const newParents = dataSource.map((d) => {
+                    return {
+                        value: d.id,
+                        label: d.name,
+                    };
+                });
+                setParents(newParents);
+            }
         }
-    }, [isOpen, initialValues, form]);
+    }, [isOpen, dataSource, initialValues, form]);
 
     return (
         <>
@@ -94,15 +109,12 @@ function CategoryModal({ isOpen, initialValues, onSubmit, onCancel }) {
                         >
                             <Input placeholder="Nhập tên danh mục" />
                         </Form.Item>
-                        <Form.Item
-                            label="Giá Bán"
-                            name="price"
-                        >
-                            <InputNumber
-                                min="0"
-                                formatter={formatter}
-                                parser={parser}
-                                addonAfter={"VND"}
+                        <Form.Item label="Danh mục cha" name="parent_id">
+                            <Select
+                                placeholder="Danh mục cha"
+                                style={{ width: 270 }}
+                                options={parents}
+                                allowClear
                             />
                         </Form.Item>
                     </div>

@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import PostModal from "./PostModal";
-import products from "~/store/products";
+import posts from "~/store/posts";
 import notify from "~/utils/notify";
 import { useParams } from "react-router-dom";
 import Navcrumb from "./Navcrumb";
@@ -20,7 +20,6 @@ import { formatPrice, removeVietnameseTones, round } from "~/utils/filters";
 import TopHeader from "~/components/TopHeader";
 const { Text, Link } = Typography;
 function Post() {
-    const { wareHouse } = useParams();
     const queryParameters = new URLSearchParams(window.location.search);
     const family = queryParameters.get("family");
     const [load, setLoad] = useState(false);
@@ -29,6 +28,7 @@ function Post() {
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({});
     const [families, setFamilies] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     const [filters, setFilters] = useState({ name: "" });
 
@@ -36,12 +36,12 @@ function Post() {
 
     const fetchData = () => {
         setLoading(true);
-        products.getDatas(wareHouse).then((response) => {
-            if (response.products) {
-                setDataSource(response.products);
+        posts.getDatas().then((response) => {
+            if (response.posts) {
+                setDataSource(response.posts);
             }
-            if (response.families) {
-                setFamilies(response.families);
+            if (response.categories) {
+                setCategories(response.categories);
             }
             setLoading(false);
         });
@@ -49,7 +49,7 @@ function Post() {
 
     useEffect(() => {
         fetchData();
-    }, [load, wareHouse]);
+    }, [load]);
 
     useEffect(() => {
         if (family) {
@@ -59,12 +59,11 @@ function Post() {
 
     const handleClickAdd = (e) => {
         setFormData({
-            name: "",
-            family: 0,
-            description: "",
-            unit: "",
+            title: "",
+            content: "",
             file: "",
-            conversions: [],
+            category: null,
+            category_name: "",
         });
         setIsOpen(true);
     };
@@ -97,7 +96,7 @@ function Post() {
 
     const handleDelete = (row) => {
         if (row.id) {
-            products
+            posts
                 .deleteData(row.id)
                 .then((response) => {
                     if (response.success) {
@@ -113,7 +112,7 @@ function Post() {
         }
     };
 
-    const handleChangeName = (valueName) => {
+    const handleChangeTitle = (valueName) => {
         setFilters({ ...filters, name: valueName });
     };
 
@@ -184,12 +183,11 @@ function Post() {
                     </Space>
                 }
             />
-            <Navcrumb />
             <Card size="small" style={{ marginBottom: 0 }}>
                 <PostModal
                     isOpen={isOpen}
                     initialValues={formData}
-                    families={families}
+                    categories={categories}
                     onSubmit={finishSubmitForm}
                     onCancel={closeModal}
                 />
@@ -225,27 +223,19 @@ function Post() {
                         }}
                     />
                     <Table.Column
-                        title="MÃ NVL"
-                        dataIndex="code"
-                        key="code"
-                        width={60}
-                        align="center"
-                        render={(code) => <Tag color="red">{code}</Tag>}
-                    />
-                    <Table.Column
                         title={() => (
                             <Input
                                 allowClear
-                                placeholder="TÊN NGUYÊN LIỆU"
+                                placeholder="TIÊU ĐỀ"
                                 value={filters.name}
                                 onChange={(e) =>
-                                    handleChangeName(e.target.value)
+                                    handleChangeTitle(e.target.value)
                                 }
                             />
                         )}
                         //title="TÊN NGUYÊN LIỆU"
-                        dataIndex="name"
-                        key="name"
+                        dataIndex="title"
+                        key="title"
                         width={150}
                         render={(value, record, index) => {
                             return (
@@ -258,77 +248,20 @@ function Post() {
                                     ) : (
                                         ""
                                     )}
-                                    {record.description ? (
-                                        <small>{record.description}</small>
-                                    ) : (
-                                        ""
-                                    )}
                                 </>
                             );
                         }}
                     />
+
                     <Table.Column
-                        title="ĐƠN VỊ"
-                        dataIndex="unit"
-                        key="unit"
-                        width={60}
-                        align="center"
-                        render={(unit) => <span>{unit}</span>}
-                    />
-                    <Table.Column
-                        title="ĐƠN VỊ CHUYỂN ĐỔI"
-                        dataIndex="conversions"
-                        key="conversions"
-                        width={250}
-                        render={(conversions, record, index) => {
-                            return (
-                                <>
-                                    {conversions?.map((item, i) => {
-                                        return (
-                                            <div key={i}>
-                                                {item.operation == "*" ? (
-                                                    <>
-                                                        <small>
-                                                            1 {item.unit} ={" "}
-                                                            {formatPrice(
-                                                                item.ratio
-                                                            )}{" "}
-                                                            {record.unit}
-                                                        </small>
-                                                        <br></br>
-                                                    </>
-                                                ) : (
-                                                    ""
-                                                )}
-                                                {item.operation == "/" ? (
-                                                    <>
-                                                        <small>
-                                                            1 {item.unit} ={" "}
-                                                            {1 / item.ratio}{" "}
-                                                            {record.unit}
-                                                        </small>
-                                                    </>
-                                                ) : (
-                                                    ""
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </>
-                            );
-                        }}
-                    />
-                    <Table.Column
-                        title="NHÓM NL"
-                        dataIndex="family_name"
-                        key="familyName"
+                        title="DANH MỤC"
+                        dataIndex="category_name"
+                        key="categoryName"
                         align="center"
                         width={120}
-                        render={(family_name, record) => (
+                        render={(categoryName, record) => (
                             <span>
-                                <Tag color={record.family_color}>
-                                    {family_name}
-                                </Tag>
+                                <Tag>{categoryName}</Tag>
                             </span>
                         )}
                     />

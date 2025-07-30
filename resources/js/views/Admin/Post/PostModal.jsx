@@ -10,15 +10,17 @@ import {
     Space,
     Popconfirm,
     Select,
+    Row,
+    Col,
 } from "antd";
 import notify from "~/utils/notify";
-import products from "~/store/products";
+import posts from "~/store/posts";
 import { useParams } from "react-router-dom";
 import Image from "~/components/Image";
 import { DeleteOutlined, PlusCircleFilled } from "@ant-design/icons";
 const { TextArea } = Input;
 const { Title } = Typography;
-function PostModal({ isOpen, initialValues, families, onSubmit, onCancel }) {
+function PostModal({ isOpen, initialValues, categories, onSubmit, onCancel }) {
     const { wareHouse } = useParams();
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
@@ -28,11 +30,14 @@ function PostModal({ isOpen, initialValues, families, onSubmit, onCancel }) {
         if (initialValues.id) {
             const formData = new FormData();
             formData.append("_method", "PATCH");
-            formData.append("code", values.code);
-            formData.append("name", values.name);
-            formData.append("description", values.description);
-            formData.append("unit", values.unit);
-            formData.append("family", values.family || 0);
+            formData.append("title", values.title);
+            if (values.content) {
+                formData.append("content", values.content || "");
+            }
+            if (values.category) {
+                formData.append("category", values.category || null);
+            }
+
             if (
                 values.file &&
                 values.file[0] &&
@@ -41,18 +46,7 @@ function PostModal({ isOpen, initialValues, families, onSubmit, onCancel }) {
                 formData.append("file", values.file[0]?.originFileObj);
             }
 
-            if (values.conversions && values.conversions.length) {
-                values.conversions.forEach((obj, index) => {
-                    formData.append(`conversions[${index}][id]`, obj.id || 0);
-                    formData.append(`conversions[${index}][unit]`, obj.unit);
-                    formData.append(`conversions[${index}][ratio]`, obj.ratio);
-                    formData.append(
-                        `conversions[${index}][operation]`,
-                        obj.operation
-                    );
-                });
-            }
-            products
+            posts
                 .updateData(initialValues.id, formData)
                 .then((response) => {
                     if (response.success) {
@@ -70,11 +64,13 @@ function PostModal({ isOpen, initialValues, families, onSubmit, onCancel }) {
                 });
         } else {
             const formData = new FormData();
-            formData.append("code", values.code);
-            formData.append("name", values.name);
-            formData.append("description", values.description);
-            formData.append("unit", values.unit);
-            formData.append("family", values.family || 0);
+            formData.append("title", values.title);
+            if (values.content) {
+                formData.append("content", values.content || "");
+            }
+            if (values.category) {
+                formData.append("category", values.category || null);
+            }
             if (
                 values.file &&
                 values.file[0] &&
@@ -82,19 +78,8 @@ function PostModal({ isOpen, initialValues, families, onSubmit, onCancel }) {
             ) {
                 formData.append("file", values.file[0]?.originFileObj);
             }
-            if (values.conversions && values.conversions.length) {
-                values.conversions.forEach((obj, index) => {
-                    formData.append(`conversions[${index}][id]`, obj.id || 0);
-                    formData.append(`conversions[${index}][unit]`, obj.unit);
-                    formData.append(`conversions[${index}][ratio]`, obj.ratio);
-                    formData.append(
-                        `conversions[${index}][operation]`,
-                        obj.operation
-                    );
-                });
-            }
-            products
-                .addData(wareHouse, formData)
+            posts
+                .addData(formData)
                 .then((response) => {
                     if (response.success) {
                         onSubmit("add", response.data);
@@ -115,21 +100,20 @@ function PostModal({ isOpen, initialValues, families, onSubmit, onCancel }) {
         console.log("Failed:", errorInfo);
     };
 
-    var text = initialValues.id ? "Sửa sản phẩm" : "Thêm sản phẩm";
+    var text = initialValues.id ? "Sửa bài viết" : "Thêm bài viết";
     useEffect(() => {
         if (isOpen) {
-            setConversions(initialValues.conversions);
             form.setFieldsValue({
-                code: initialValues.code,
-                name: initialValues.name,
-                description: initialValues.description,
-                unit: initialValues.unit,
-                conversions: initialValues.conversions,
-                family: "",
+                title: initialValues.title,
+                content: initialValues.content,
+                category: null,
+                category_name: "",
             });
-            if (initialValues.family_id) {
+            if (initialValues.category_id) {
+                console.log(initialValues.category_id);
+
                 form.setFieldsValue({
-                    family: initialValues.family_id,
+                    category: initialValues.category_id,
                 });
             }
             if (initialValues.file) {
@@ -137,7 +121,7 @@ function PostModal({ isOpen, initialValues, families, onSubmit, onCancel }) {
                     file: [
                         {
                             uid: "-1",
-                            name: initialValues.name,
+                            name: initialValues.title,
                             status: "done",
                             url: `/uploads/thumbnails/${initialValues.file}`,
                         },
@@ -151,34 +135,24 @@ function PostModal({ isOpen, initialValues, families, onSubmit, onCancel }) {
         }
     }, [isOpen, initialValues, form]);
 
-    const handleClickAddRow = () => {
-        const row = {
-            index: conversions.length + 1,
-            id: "",
-            unit: "",
-            ratio: "",
-            operation: "",
-        };
-        const newConversions = [...conversions, row];
-        setConversions(newConversions);
-    };
-
-    const handleDelete = (row) => {
-        const newData = conversions.filter((item) => item.id !== row.id);
-        setConversions(newData);
-    };
-
     return (
         <>
             <Modal
                 title={text}
                 open={isOpen}
                 onCancel={onCancel}
-                footer={null}
+                footer={null} // Disable footer
+                header={null} // Disable header
+                width={1024}
+                style={{
+                    maxHeight: "calc(100vh -150px)",
+                    overflow: "auto",
+                }}
                 maskClosable={false}
             >
                 <Form
                     form={form}
+                    layout="vertical"
                     name="basic"
                     labelCol={{
                         span: 8,
@@ -191,240 +165,82 @@ function PostModal({ isOpen, initialValues, families, onSubmit, onCancel }) {
                     autoComplete="off"
                 >
                     <div className="form-wrap">
-                        <Form.Item
-                            label="Mã NVL"
-                            name="code"
-                            rules={[
-                                {
-                                    required: false,
-                                    message: "Nhập mã nguyên vật liệu!",
-                                },
-                            ]}
-                        >
-                            <Input placeholder="Nhập mã nguyên vật liệu" />
-                        </Form.Item>
-                        <Form.Item
-                            label="Tên nguyên vật liệu"
-                            name="name"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Nhập tên nguyên vật liệu!",
-                                },
-                            ]}
-                        >
-                            <Input placeholder="Nhập tên nguyên vật liệu" />
-                        </Form.Item>
-                        <Image />
-                        <Form.Item
-                            label="Đơn vị"
-                            name="unit"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Nhập đơn vị!",
-                                },
-                            ]}
-                        >
-                            <Input placeholder="Nhập đơn vị" />
-                        </Form.Item>
-                        <Form.Item label="Mô tả" name="description">
-                            <TextArea rows={4} placeholder="Nhập mô tả" />
-                        </Form.Item>
-                        <Form.Item label="Nhóm" name="family">
-                            <Select
-                                placeholder="Chọn nhóm vật liệu"
-                                allowClear
-                                options={
-                                    families?.map((f) => {
-                                        return {
-                                            value: f.id,
-                                            label: f.name,
-                                        };
-                                    }) || []
-                                }
-                            />
-                        </Form.Item>
-                        <Title level={4}>Đơn vị chuyển đổi</Title>
-                        {conversions.length > 0 ? (
-                            <Table
-                                rowKey={(record) => record.id}
-                                dataSource={conversions}
-                                pagination={false}
-                                bordered
-                            >
-                                <Table.Column
-                                    title="STT"
-                                    dataIndex="index"
-                                    key="index"
-                                    width={40}
-                                    align="center"
-                                    render={(text, record, index) => (
-                                        <>
-                                            <span>{index + 1}</span>
-                                        </>
-                                    )}
-                                />
-                                <Table.Column
-                                    title="ĐƠN VỊ"
-                                    dataIndex="unit"
-                                    key="unit"
-                                    align="center"
-                                    width={120}
-                                    render={(value, row, index) => (
+                        <Row gutter={[16, 16]}>
+                            <Col span={16}>
+                                <Form.Item
+                                    label="Tiêu đề"
+                                    name="title"
+                                    labelCol={{ span: 24 }}
+                                    wrapperCol={{ span: 24 }}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Nhập tiêu đề!",
+                                        },
+                                    ]}
+                                >
+                                    <Input placeholder="Nhập tiêu đề" />
+                                </Form.Item>
+                                <Form.Item
+                                    label="Nội dung"
+                                    name="content"
+                                    labelCol={{ span: 24 }}
+                                    wrapperCol={{ span: 24 }}
+                                >
+                                    <TextArea
+                                        rows={20}
+                                        placeholder="Nhập nội dung"
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col span={8}>
+                                <Row>
+                                    <Col span={24}>
                                         <Form.Item
-                                            name={[
-                                                "conversions",
-                                                index,
-                                                "unit",
-                                            ]}
-                                            style={{ margin: "0 0 0" }}
-                                            labelCol={{ span: 0 }}
+                                            label="Danh mục"
+                                            name="category"
+                                            labelCol={{ span: 24 }}
                                             wrapperCol={{ span: 24 }}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "Nhập đơn vị!",
-                                                },
-                                            ]}
                                         >
-                                            <Input style={{ width: "100%" }} />
+                                            <Select
+                                                placeholder="Chọn danh mục"
+                                                allowClear
+                                                options={
+                                                    categories?.map((f) => {
+                                                        return {
+                                                            value: f.id,
+                                                            label: f.name,
+                                                        };
+                                                    }) || []
+                                                }
+                                            />
                                         </Form.Item>
-                                    )}
-                                />
-                                <Table.Column
-                                    dataIndex="ratio"
-                                    title="TỈ LỆ"
-                                    width={100}
-                                    render={(value, row, index) => {
-                                        return (
-                                            <Form.Item
-                                                name={[
-                                                    "conversions",
-                                                    index,
-                                                    "ratio",
-                                                ]}
-                                                style={{ margin: "0 0 0" }}
-                                                labelCol={{ span: 0 }}
-                                                wrapperCol={{ span: 24 }}
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message: "Nhập tỉ lệ!",
-                                                    },
-                                                ]}
-                                            >
-                                                <InputNumber
-                                                    min="0"
-                                                    style={{ width: "100%" }}
-                                                />
-                                            </Form.Item>
-                                        );
-                                    }}
-                                />
-                                <Table.Column
-                                    dataIndex={"operation"}
-                                    title="PHÉP TÍNH"
-                                    width={90}
-                                    render={(value, row, index) => {
-                                        return (
-                                            <Form.Item
-                                                name={[
-                                                    "conversions",
-                                                    index,
-                                                    "operation",
-                                                ]}
-                                                style={{ margin: "0 0 0" }}
-                                                labelCol={{ span: 0 }}
-                                                wrapperCol={{ span: 24 }}
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message:
-                                                            "Chọn phép tính!",
-                                                    },
-                                                ]}
-                                            >
-                                                <Select
-                                                    placeholder="Chọn phép tính"
-                                                    style={{
-                                                        width: 90,
-                                                    }}
-                                                    options={[
-                                                        {
-                                                            value: "*",
-                                                            label: "*",
-                                                        },
-                                                        {
-                                                            value: "/",
-                                                            label: "/",
-                                                        },
-                                                    ]}
-                                                />
-                                            </Form.Item>
-                                        );
-                                    }}
-                                />
-                                <Table.Column
-                                    title=""
-                                    dataIndex="action"
-                                    key="action"
-                                    align="center"
-                                    width={50}
-                                    render={(text, record) => {
-                                        return (
-                                            <>
-                                                <Space size="middle">
-                                                    <Popconfirm
-                                                        placement="left"
-                                                        title="Bạn có muốn xóa dòng này?"
-                                                        onConfirm={() =>
-                                                            handleDelete(record)
-                                                        }
-                                                        okText="Đồng ý xóa"
-                                                        cancelText="hủy"
-                                                        okType="danger"
-                                                    >
-                                                        <Button
-                                                            type="dashed"
-                                                            size="small"
-                                                            icon={
-                                                                <DeleteOutlined />
-                                                            }
-                                                            danger
-                                                        />
-                                                    </Popconfirm>
-                                                </Space>
-                                            </>
-                                        );
-                                    }}
-                                />
-                            </Table>
-                        ) : (
-                            ""
-                        )}
-
-                        <Button
-                            type="primary"
-                            size="small"
-                            icon={<PlusCircleFilled />}
-                            onClick={handleClickAddRow}
-                        >
-                            Thêm dòng
-                        </Button>
-                    </div>
-
-                    <div className="ant-modal-footer">
-                        <Button type="default" onClick={onCancel}>
-                            Hủy
-                        </Button>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={loading}
-                        >
-                            Lưu
-                        </Button>
+                                        <Image />
+                                        <Form.Item
+                                            label=""
+                                            labelCol={{ span: 24 }}
+                                            wrapperCol={{ span: 24 }}
+                                        >
+                                            <Space>
+                                                <Button
+                                                    type="default"
+                                                    onClick={onCancel}
+                                                >
+                                                    Hủy
+                                                </Button>
+                                                <Button
+                                                    type="primary"
+                                                    htmlType="submit"
+                                                    loading={loading}
+                                                >
+                                                    Lưu
+                                                </Button>
+                                            </Space>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
                     </div>
                 </Form>
             </Modal>

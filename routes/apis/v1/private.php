@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,5 +29,21 @@ Route::middleware(['auth:api', 'scope:admin'])->group(function () {
         Route::post('/', [UserController::class, 'store']);
         Route::put('/{user}', [UserController::class, 'update']);
         Route::delete('/{user}', [UserController::class, 'destroy']);
+    });
+
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index']);
+        Route::post('/', [CategoryController::class, 'store']);
+        Route::put('/{categoryId}', [CategoryController::class, 'update']);
+        Route::delete('/{categoryId}', [CategoryController::class, 'destroy']);
+    });
+
+    Route::prefix('posts')->group(function () {
+        Route::get('/', [PostController::class, 'index']);
+        Route::get('/search', [PostController::class, 'search']);
+        Route::post('/', [PostController::class, 'store']);
+        Route::patch('/{postId}', [PostController::class, 'update']);
+        Route::delete('/{postId}', [PostController::class, 'destroy']);
+
     });
 });
